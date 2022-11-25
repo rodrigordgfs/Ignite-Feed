@@ -48,6 +48,11 @@
   margin-top: 1.5rem;
 }
 
+.post .content .tags {
+  display: flex;
+  gap: 0.25rem;
+}
+
 .post .content p {
   margin-top: 1rem;
 }
@@ -110,9 +115,14 @@
   cursor: pointer;
 }
 
-.post .commentForm footer button[type="submit"]:hover {
+.post .commentForm footer button[type="submit"]:not(:disabled):hover {
   background: var(--green-300);
   transition: background 0.2s;
+}
+
+.post .commentForm footer button[type="submit"]:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
 }
 
 .commentList {

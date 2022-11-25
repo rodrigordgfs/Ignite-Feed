@@ -1,6 +1,7 @@
 import { Header } from "./components/Header";
 import { SideBar } from "./components/SideBar";
 import { Post } from "./components/Post";
+import posts from "./api/posts";
 import styles from "./App.module.css";
 import "./reset.css";
 import "./global.css";
@@ -12,9 +13,17 @@ export function App() {
       <div className={styles.wrapper}>
         <SideBar />
         <main>
-          <Post />
-          <Post />
-          <Post />
+          {posts.map((post) => {
+            return (
+              <Post
+                key={post.id}
+                author={post.author}
+                content={post.content}
+                tags={post.tags}
+                publishedAt={post.publishedAt}
+              />
+            );
+          })}
         </main>
       </div>
     </div>
