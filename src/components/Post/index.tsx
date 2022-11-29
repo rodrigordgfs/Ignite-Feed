@@ -3,11 +3,12 @@ import { Comment } from "../Comment";
 import { format, formatDistanceToNow } from "date-fns";
 import ptBR from "date-fns/locale/pt-BR";
 import styles from "./index.module.css";
-import { useState } from "react";
+import { useState, FormEvent, ChangeEvent, InvalidEvent } from "react";
+import { PostProps } from "../../interfaces/IPostProps";
 
-export function Post({ author, content, tags, publishedAt }) {
-  const [comments, setComments] = useState([]);
-  const [newComment, setNewComment] = useState("");
+export function Post({ author, content, tags, publishedAt }: PostProps) {
+  const [comments, setComments] = useState([""]);
+  const [newCommentText, setNewCommentText] = useState("");
 
   const publishedAtFormatted = format(
     publishedAt,
@@ -22,35 +23,35 @@ export function Post({ author, content, tags, publishedAt }) {
     addSuffix: true,
   });
 
-  function handleCreateNewComment(e) {
-    e.preventDefault();
-    setComments([...comments, newComment]);
-    setNewComment("");
+  function handleCreateNewComment(event: FormEvent) {
+    event.preventDefault();
+    setComments((oldComments) => [...oldComments, newCommentText]);
+    setNewCommentText("");
   }
 
-  function handleNewCommentChange(e) {
-    e.target.setCustomValidity("");
-    setNewComment(e.target.value);
+  function handleNewCommentChange(event: ChangeEvent<HTMLTextAreaElement>) {
+    event.target.setCustomValidity("");
+    setNewCommentText(event.target.value);
   }
 
-  function handleDeleteComment(commentToDelete) {
+  function handleDeleteComment(commentToDelete: string) {
     const commentsWithoutDeleted = comments.filter(
       (comment) => comment !== commentToDelete
     );
     setComments(commentsWithoutDeleted);
   }
 
-  function handleNewCommentInvalid(e) {
-    e.target.setCustomValidity("O comentário não pode estar vazio");
+  function handleNewCommentInvalid(event: InvalidEvent<HTMLTextAreaElement>) {
+    event.target.setCustomValidity("O comentário não pode estar vazio");
   }
 
-  const isNewCommentEmmpty = newComment.length === 0;
+  const isNewCommentEmmpty = newCommentText.length === 0;
 
   return (
     <article className={styles.post}>
       <header>
         <div className={styles.author}>
-          <Avatar image={author.avatarUrl} hasBorder />
+          <Avatar src={author.avatarUrl} hasBorder />
           <div className={styles.authorInfo}>
             <strong>{author.name}</strong>
             <span>{author.role}</span>
@@ -86,7 +87,7 @@ export function Post({ author, content, tags, publishedAt }) {
       <form onSubmit={handleCreateNewComment} className={styles.commentForm}>
         <strong>Deixe seu feedback</strong>
         <textarea
-          value={newComment}
+          value={newCommentText}
           placeholder="Deixe um comentário"
           onChange={handleNewCommentChange}
           onInvalid={handleNewCommentInvalid}
